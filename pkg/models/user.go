@@ -5,7 +5,7 @@ import (
 
 	"github.com/google/uuid"
 )
-
+// User represents an authenticated user in the system.
 type User struct {
 	ID           uuid.UUID
 	Username     string
