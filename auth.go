@@ -1,4 +1,3 @@
-package auth
 // Package auth provides a simple interface for user authentication.
 // It handles password hashing and JWT token generation under the hood.
 package auth
@@ -24,7 +23,7 @@ func New(storage service.UserProvider, secretKey string) (*service.AuthService, 
 	passHasher := hasher.BcryptHasher{}
 	jwtManager, err := jwt.New(secretKey)
 	if err != nil {
-		fmt.Errorf("failed to create jwt manager")
+		return nil, fmt.Errorf("failed to create jwt manager: %w", err)
 	}
 	return service.NewAuthService(storage, passHasher, jwtManager), nil
 }

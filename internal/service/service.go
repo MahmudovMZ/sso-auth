@@ -3,12 +3,14 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/MahmudovMZ/sso-auth/internal/hasher"
 	"github.com/MahmudovMZ/sso-auth/pkg/models"
 	"github.com/google/uuid"
 )
+
 // UserProvider is the interface that must be implemented by the caller.
 // It abstracts the database layer so the library stays storage-agnostic.
 type UserProvider interface {
@@ -31,6 +33,7 @@ type AuthService struct { //Struct for the DataBase and the hash service
 func NewAuthService(storage UserProvider, hasher hasher.PasswordHasher, tokenManager TokenManager) *AuthService { //returning service's data such as storage(postgreSQL, MySQL)
 	return &AuthService{storage: storage, hasher: hasher, tokenManager: tokenManager}
 }
+
 // Register creates a new user with the given email and password.
 // The password is hashed using bcrypt before being stored.
 func (s *AuthService) Register(ctx context.Context, email, password string) error { //filling the user's data
@@ -51,6 +54,7 @@ func (s *AuthService) Register(ctx context.Context, email, password string) erro
 	}
 	return nil
 }
+
 // Login authenticates a user and returns a signed JWT token on success.
 // Returns an error if the credentials are invalid.
 func (s *AuthService) Login(ctx context.Context, email, password string) (string, error) {
@@ -60,10 +64,10 @@ func (s *AuthService) Login(ctx context.Context, email, password string) (string
 	}
 	ok, err := s.hasher.Compare(password, user.PasswordHash)
 	if err != nil {
-		return "", errors.New("Invalid credentials")
+		return "", fmt.Errorf("failed to compare password: %w", err)
 	}
 	if !ok {
-		return "", errors.New("Invalid credentials")
+		return "", errors.New("invalid credentials")
 	}
 	token, err := s.tokenManager.NewToken(*user, time.Hour*24)
 	if err != nil {
