@@ -1,6 +1,6 @@
 # sso-auth
 [
-![CI](https://github.com/MahmudovMZ/sso-auth/actions/workflows/ci/yml/badge.svg)
+![CI](https://github.com/MahmudovMZ/sso-auth/actions/workflows/ci.yml/badge.svg)
 ](https://github.com/MahmudovMZ/sso-auth/actions)
 > A lightweight, interface-driven Go SDK for JWT authentication and password hashing.
 
